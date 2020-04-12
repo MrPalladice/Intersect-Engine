@@ -59,8 +59,6 @@ namespace Intersect.Server.Entities
 
         #endregion
 
-        public Player() { }
-
         public static int OnlineCount => OnlinePlayers.Count;
 
         [JsonProperty("MaxVitals"), NotMapped]
@@ -1083,8 +1081,6 @@ namespace Intersect.Server.Entities
                     base.TryAttack(target, 1, DamageType.Physical, Stats.Attack, 100, 10, 1.5);
                 }
             }
-
-            PacketSender.SendEntityAttack(this, CalculateAttackTime());
         }
 
         public override bool CanAttack(Entity entity, SpellBase spell)
@@ -3222,6 +3218,14 @@ namespace Intersect.Server.Entities
                     else
                     {
                         amount = 1;
+                    }
+
+                    //Check if the item is bound.. if so don't allow trade
+                    if (itemBase.Bound)
+                    {
+                        PacketSender.SendChatMsg(this, Strings.Bags.tradebound, CustomColors.Items.Bound);
+
+                        return;
                     }
 
                     //Check if this is a bag with items.. if so don't allow sale

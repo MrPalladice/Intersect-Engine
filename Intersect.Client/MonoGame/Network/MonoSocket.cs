@@ -21,10 +21,6 @@ namespace Intersect.Client.MonoGame.Network
         public static ConcurrentQueue<KeyValuePair<IConnection, IPacket>> PacketQueue =
             new ConcurrentQueue<KeyValuePair<IConnection, IPacket>>();
 
-        public MonoSocket()
-        {
-        }
-
         public override void Connect(string host, int port)
         {
             if (ClientLidgrenNetwork != null)
@@ -48,9 +44,9 @@ namespace Intersect.Client.MonoGame.Network
             }
 
             ClientLidgrenNetwork.Handler = AddPacketToQueue;
-            ClientLidgrenNetwork.OnConnected += delegate { OnConnected(); };
-            ClientLidgrenNetwork.OnDisconnected += delegate { OnDisconnected(); };
-            ClientLidgrenNetwork.OnConnectionDenied += delegate { OnConnectionFailed(true); };
+            ClientLidgrenNetwork.OnConnected += OnConnected;
+            ClientLidgrenNetwork.OnDisconnected += OnDisconnected;
+            ClientLidgrenNetwork.OnConnectionDenied += (sender, connectionEventArgs) => OnConnectionFailed(sender, connectionEventArgs, true);
 
             if (!ClientLidgrenNetwork.Connect())
             {
